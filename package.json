@@ -1,0 +1,81 @@
+{
+  "name": "wps-theme",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build-css": "sass ./src/scss:./",
+    "watch-css": "sass --watch ./src/scss:./",
+    "build-ts": "tsc",
+    "watch-ts": "tsc --watch",
+    "watch-cleanup": "node dev/js/cleanup.js",
+    "start": "node dev/js/browsersync.js",
+    "setup": "node dev/js/setup.js",
+    "clear-logs": "node dev/js/clear-logs.js",
+    "dev:linux": "npm run setup && npm run clear-logs && concurrently --raw \"npm run start | node dev/js/strip-ansi.js | tee ./dev/js/logs/start.log\" \"npm run watch-css | node dev/js/strip-ansi.js | tee ./dev/js/logs/watch-css.log\" \"npm run watch-ts | node dev/js/strip-ansi.js | tee ./dev/js/logs/watch-ts.log\" \"npm run watch-cleanup | node dev/js/strip-ansi.js | tee ./dev/js/logs/watch-cleanup.log\"",
+    "dev:windows": "npm run setup && npm run clear-logs && concurrently --raw \"npm run start | node dev/js/strip-ansi.js > ./dev/js/logs/start.log\" \"npm run watch-css | node dev/js/strip-ansi.js > ./dev/js/logs/watch-css.log\" \"npm run watch-ts | node dev/js/strip-ansi.js > ./dev/js/logs/watch-ts.log\" \"npm run watch-cleanup | node dev/js/strip-ansi.js > ./dev/js/logs/watch-cleanup.log\"",
+    "dev": "npm run dev:linux",
+    "lint": "eslint './src/ts/**/*.ts' --quiet",
+    "lint:fix": "eslint './src/ts/**/*.ts' --fix",
+    "lint:scss": "stylelint './src/scss/**/*.scss'",
+    "lint:scss:fix": "stylelint './src/scss/**/*.scss' --fix",
+    "build:css": "npm run build-css && postcss ./style.css -o ./style.min.css",
+    "release": "standard-version"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@eslint/js": "^9.12.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "cssnano": "^7.0.6",
+    "eslint": "^9.12.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "postcss": "^8.4.47",
+    "postcss-cli": "^11.0.0",
+    "prettier": "^3.3.3",
+    "sass": "^1.79.4"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^17.6.0",
+    "@commitlint/cli": "^17.6.0",
+    "@types/eslint__eslintrc": "^2.1.2",
+    "@types/eslint__js": "^8.42.3",
+    "browser-sync": "^3.0.3",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^9.0.1",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10",
+    "strip-ansi": "^7.0.1",
+    "stylelint": "^16.9.0",
+    "stylelint-config-standard": "^36.0.1",
+    "stylelint-scss": "^6.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "standard-version": "^9.5.0"
+  },
+  "engines": {
+    "node": "22",
+    "php": "8"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-push": "npm run release"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "npm run lint:fix",
+      "git add"
+    ],
+    "*.scss": [
+      "npm run lint:scss:fix",
+      "git add"
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+services:
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example_root_password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress_user
+      MYSQL_PASSWORD: wordpress_password
+    networks:
+      - wp-network
+
+  wordpress:
+    build:
+      context: ./dev/docker
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    ports:
+      - '8010:80'
+    volumes:
+      - .:/var/www/html/wp-content/themes/fast-theme
+      - ./dev/docker/logs/apache2:/var/log/apache2
+      - ./dev/docker/logs/php:/var/log/php
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress_user
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress
+    networks:
+      - wp-network
+
+volumes:
+  db_data:
+
+networks:
+  wp-network:
+    driver: bridge
