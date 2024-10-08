@@ -19,7 +19,8 @@
     "lint:scss": "stylelint './src/scss/**/*.scss'",
     "lint:scss:fix": "stylelint './src/scss/**/*.scss' --fix",
     "build:css": "npm run build-css && postcss ./style.css -o ./style.min.css",
-    "release": "standard-version"
+    "release": "standard-version",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -60,13 +61,6 @@
   "engines": {
     "node": "22",
     "php": "8"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-      "pre-push": "npm run release"
-    }
   },
   "lint-staged": {
     "*.ts": [
