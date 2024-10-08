@@ -1,6 +1,6 @@
 {
   "name": "wps-theme",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "index.js",
   "scripts": {
     "build-css": "sass ./src/scss:./",
@@ -64,12 +64,10 @@
   },
   "lint-staged": {
     "*.ts": [
-      "npm run lint:fix",
-      "git add"
+      "npm run lint:fix"
     ],
     "*.scss": [
-      "npm run lint:scss:fix",
-      "git add"
+      "npm run lint:scss:fix"
     ]
   }
 }
