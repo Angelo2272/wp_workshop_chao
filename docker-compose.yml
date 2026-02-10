@@ -5,8 +5,8 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: example_root_password
-      MYSQL_DATABASE: wordpress
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: wordpress_db
       MYSQL_USER: wordpress_user
       MYSQL_PASSWORD: wordpress_password
     networks:
@@ -14,27 +14,28 @@ services:
 
   wordpress:
     build:
-      context: ./dev/docker
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: etc/docker/Dockerfile
     depends_on:
       - db
     ports:
-      - '8010:80'
+      - '8080:80'
     volumes:
       - .:/var/www/html/wp-content/themes/fast-theme
-      - ./dev/docker/logs/apache2:/var/log/apache2
-      - ./dev/docker/logs/php:/var/log/php
     environment:
-      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_HOST: db 
       WORDPRESS_DB_USER: wordpress_user
       WORDPRESS_DB_PASSWORD: wordpress_password
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_NAME: wordpress_db
+    env_file:
+      - .env
     networks:
       - wp-network
 
 volumes:
   db_data:
+  
 
 networks:
-  wp-network:
+  wp-network:   
     driver: bridge
