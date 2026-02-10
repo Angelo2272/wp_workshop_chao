@@ -1,0 +1,26 @@
+{
+    "name": "proyecto/wordpress-chao",
+    "require": {
+        "wpackagist-plugin/polylang": "*",
+        "wpackagist-plugin/redis-cache": "*",
+        "wpackagist-plugin/smart-slider-3": "*"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://wpackagist.org"
+        }
+    ],
+    "extra": {
+        "installer-paths": {
+            "wp-content/plugins/{$name}/": [
+                "type:wordpress-plugin"
+            ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true
+        }
+    }
+}

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-hello-world
+  namespace: web-presence-{BUILD_ENV}
+  labels:
+    app: wordpress-hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress-hello-world
+  template:
+    metadata:
+      labels:
+        app: wordpress-hello-world
+    spec:
+      imagePullSecrets:
+        - name: gcloud-artifact-registry
+      containers:
+        - name: wordpress-hello-world
+          image: localhost:32000/image:latest
+          imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: wordpress-hello-world-secret
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+          volumeMounts:
+            - name: wp-uploads
+              mountPath: /app/public/wp-content/uploads
+              subPath: wordpress-hello-world
+      volumes:
+        - name: wp-uploads
+          persistentVolumeClaim:
+            claimName: wordpress-uploads-pvc
