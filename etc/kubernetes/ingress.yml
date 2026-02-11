@@ -3,23 +3,18 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: academic-configurations-gateway-ingress
-  namespace: web-presence-{BUILD_ENV}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     #nginx.ingress.kubernetes.io/proxy-body-size: 128m
 spec:
-  tls:
-    - hosts:
-        - wordpress-hello-world.ctdesarrollo.org
-      secretName: wildcard-ctdesarrollo-org
   rules:
-    - host: wordpress-hello-world.ctdesarrollo.org
+    - host: wordpress-hello-world-chao.ctdesarrollo.org
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: wordpress-hello-world
+                name: wordpress-hello-world-chao
                 port:
                   number: 8080

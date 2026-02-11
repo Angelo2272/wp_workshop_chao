@@ -1,40 +1,55 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wordpress-hello-world
-  namespace: web-presence-{BUILD_ENV}
+  name: wordpress-hello-world-chao
   labels:
-    app: wordpress-hello-world
+    app: wordpress-hello-world-chao
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: wordpress-hello-world
+      app: wordpress-hello-world-chao
   template:
     metadata:
       labels:
-        app: wordpress-hello-world
+        app: wordpress-hello-world-chao
     spec:
-      imagePullSecrets:
-        - name: gcloud-artifact-registry
       containers:
-        - name: wordpress-hello-world
-          image: localhost:32000/image:latest
-          imagePullPolicy: Always
+        # CONTENEDOR 1: WORDPRESS
+        - name: wordpress-hello-world-chao
+          image: wordpress:latest
+          imagePullPolicy: IfNotPresent
           envFrom:
             - secretRef:
                 name: wordpress-hello-world-secret
           resources:
             requests:
               memory: "256Mi"
-              cpu: "500m"
+              cpu: "100m"
             limits:
               memory: "512Mi"
-              cpu: "1"
+              cpu: "500m"
           volumeMounts:
             - name: wp-uploads
-              mountPath: /app/public/wp-content/uploads
-              subPath: wordpress-hello-world
+              mountPath: /var/www/html/wp-content/uploads
+             
+        # CONTENEDOR 2: MYSQL
+        - name: mysql
+          image: mysql:5.7
+          env:
+            - name: WORDPRESS_DB_HOST
+              value: "127.0.0.1"
+          envFrom:
+            - secretRef:
+                name: wordpress-hello-world-secret
+          resources: # <--- Ahora está bien alineado
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+
       volumes:
         - name: wp-uploads
           persistentVolumeClaim:
