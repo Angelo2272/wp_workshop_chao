@@ -15,10 +15,9 @@ spec:
         app: wordpress-hello-world-chao
     spec:
       containers:
-        # CONTENEDOR 1: WORDPRESS
         - name: wordpress-hello-world-chao
-          image: wordpress:latest
-          imagePullPolicy: IfNotPresent
+          image: chao/wordpress:v2
+          imagePullPolicy: Never
           envFrom:
             - secretRef:
                 name: wordpress-hello-world-secret
@@ -32,8 +31,12 @@ spec:
           volumeMounts:
             - name: wp-uploads
               mountPath: /var/www/html/wp-content/uploads
-             
-        # CONTENEDOR 2: MYSQL
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 5; cp -rp /var/www/staging/. /var/www/html/"]
+        
+
         - name: mysql
           image: mysql:5.7
           env:
@@ -42,7 +45,7 @@ spec:
           envFrom:
             - secretRef:
                 name: wordpress-hello-world-secret
-          resources: # <--- Ahora está bien alineado
+          resources:
             requests:
               memory: "256Mi"
               cpu: "100m"
